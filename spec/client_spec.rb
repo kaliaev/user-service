@@ -1,3 +1,5 @@
+require 'active_record'
+
 describe "client" do
   before(:each) do
     User.base_uri = "http://localhost:4567"
@@ -24,5 +26,4 @@ describe "client" do
     User.find_by_name("trotter").should == user
     
   end
-  
 end
