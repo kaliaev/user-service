@@ -4,8 +4,14 @@ require 'test/unit'
 require 'rack/test'
 require 'json'
 
-set :environment, :test
-Test::Unit::TestCase.send :include, Rack::Test::Methods
+# set :environment, :test
+# Test::Unit::TestCase.send :include, Rack::Test::Methods
+# rake db:migrate SINATRA_ENV=test; ruby service.rb –p 3000 –e test
+
+RSpec.configure do |conf|
+  conf.include Rack::Test::Methods
+  conf.expect_with(:rspec) { |c| c.syntax = :should }
+end
 
 def app
   Sinatra::Application
@@ -18,8 +24,8 @@ describe "service" do
   describe "GET on /api/v1/users/:id" do
     before(:each) do
       User.create(
-        :name => "pauley",
-        :email => "paul2@pauldix.net",
+        :name => "paul",
+        :email => "paul@pauldix.net",
         :password => "strongpass",
         :bio => "rubyist")
     end
@@ -58,12 +64,13 @@ describe "service" do
     end
   end
   describe "POST on /api/v1/users/:id/sessions" do
-    before(:all) do
-      User.create(:name => "josh", :password => "nyc.rb rules")
+    before(:each) do
+      User.create(:name => "josh", :password => "nyc.rb rules",
+        :email => 'josh@nyc.com')
     end
   
     it "should return the user object on valid credentials" do
-      post '/api/v1/users/j osh/sessions', {
+      post '/api/v1/users/josh/sessions', {
         :password => "nyc.rb rules"}.to_json
       last_response.should be_ok
       attributes = JSON.parse(last_response.body)
@@ -116,9 +123,9 @@ describe "service" do
        last_response.should be_ok
        get '/api/v1/users/trotter'
        attributes = JSON.parse(last_response.body)
-       attributes["name"].should  === "trotter"
-       attributes["email"].should === "no spam"
-       attributes["bio"].should   === "southern belle"
+       attributes["name"].should eql?("trotter")
+       attributes["email"].should eql?("no spam")
+       attributes["bio"].should eql?("southern belle")
     end
   end
   

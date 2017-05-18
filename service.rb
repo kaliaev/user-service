@@ -1,3 +1,5 @@
+ENV['SINATRA_ENV'] = 'test'
+
 require 'rubygems'
 require 'active_record'
 require 'sinatra'
@@ -9,14 +11,14 @@ env_index = ARGV.index("-e")
 env_arg = ARGV[env_index + 1] if env_index
 env = env_arg || ENV["SINATRA_ENV"] || "development"
 databases = YAML.load_file("/home/me/heroku_projects/user-service/config/database.yml")
+ActiveRecord::Base.establish_connection(databases[env])
+
 if env == "test"
   puts "starting in test mode"
   User.destroy_all
-  User.create(:name => "paul", :email =>
-"paul@pauldix.net",
-    :bio => "rubyist")
+  User.create(:name => "paul", :email => "paul@pauldix.net", :bio => "rubyist")
+  User.create(:name => "bryan", :email => "no spam")
 end
-ActiveRecord::Base.establish_connection(databases[env])
 
 # HTTP entry points
 # get a user by name
