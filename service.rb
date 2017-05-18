@@ -1,13 +1,14 @@
 require 'rubygems'
 require 'active_record'
 require 'sinatra'
-require './models/user'
+require_relative 'models/user'
+require 'yaml'
 
 # setting up the environment
 env_index = ARGV.index("-e")
 env_arg = ARGV[env_index + 1] if env_index
 env = env_arg || ENV["SINATRA_ENV"] || "development"
-databases = YAML.load_file("config/database.yml")
+databases = YAML.load_file("/home/me/heroku_projects/user-service/config/database.yml")
 if env == "test"
   puts "starting in test mode"
   User.destroy_all

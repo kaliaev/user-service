@@ -1,8 +1,11 @@
 require 'active_record'
+require 'spec'
+require 'test/unit'
+require 'rack/test'
 
 describe "client" do
   before(:each) do
-    User.base_uri = "http://localhost:4567"
+    User.base_uri "http://localhost:4567"
   end
 
   it "should get a user" do

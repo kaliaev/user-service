@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'typhoeus'
 require 'json'
-require 'user'
+require_relative 'models/user'
 
 class User
   class << self; attr_accessor :base_uri end
