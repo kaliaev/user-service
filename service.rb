@@ -10,7 +10,7 @@ require 'yaml'
 env_index = ARGV.index("-e")
 env_arg = ARGV[env_index + 1] if env_index
 env = env_arg || ENV["SINATRA_ENV"] || "development"
-databases = YAML.load_file("/home/me/heroku_projects/user-service/config/database.yml")
+databases = YAML.load_file("/home/me/git_projects/user-service/config/database.yml")
 ActiveRecord::Base.establish_connection(databases[env])
 
 if env == "test"
@@ -31,6 +31,15 @@ get '/api/v1/users/:name' do
   end
 end
 
+#get all users
+get '/api/v1/users' do
+  users = User.all
+  if users
+    users.to_json
+  else
+    error 404, {:error => "no users found"}.to_json  
+  end
+end 
 # create a new user
 post '/api/v1/users' do
   begin
